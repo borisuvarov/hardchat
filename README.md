@@ -1,0 +1,1 @@
+Simple chat on WebSockets/Django Channels/React. Not finished yet.

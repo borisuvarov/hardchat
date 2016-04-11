@@ -8,3 +8,4 @@ npm-debug.log
 staticfiles
 secretkey.txt
 *.pyc
+*__pycache__*
