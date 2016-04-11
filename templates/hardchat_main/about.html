@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+  <h1 class="main-logo">Х<span class="letter1">а</span><span class="nospacing">&nbsp;рдч</span><span class="letter2">а</span>&nbsp;т</h1>
+    <div class="circle"></div>
+  <p class="deck">
+    Чат, в&nbsp;котором каждую минуту банятся самые часто используемые слова&nbsp;&mdash; за&nbsp;исключением предлогов, союзов и&nbsp;прочих служебных частей речи.
+  </p>
+  <p class="comment">
+      <img class="nii-logo" src="{% static 'img/nii.png' %}">
+      Проект создан в&nbsp;рамках эксперимента <span class="marker">лаборатории <nobr>онлайн-чатов</nobr> НИИ эволюции коммуникаций им.&nbsp;<nobr>М. Н. Усиляева</nobr>.</span>
+  </p>
+    <form class="authorNameForm">
+        <input type="text" class="authorNameFormField" placeholder="Введите ваше имя..."/>
+        <a class="button button-primary" href="{% url 'new_room' %}">Начать чат</a>
+    </form>
+{% endblock content %}

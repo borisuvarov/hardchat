@@ -1,0 +1,138 @@
+body
+  padding-top: 4em
+
+.main-logo
+  font-weight: 400
+  letter-spacing: 30px
+
+.messageList
+  height: 300px
+  overflow: auto
+
+.message
+  margin-bottom: 15px
+
+.messageDatetime
+  position: relative
+  top: -1px
+  display: inline-block
+  font-size: 12px
+
+.messageAuthor
+  margin-bottom: 0px
+  display: inline-block
+  left: 10px
+  position: relative
+
+.messageText
+  display: block
+  position: relative
+  left: 58px
+  width: 90%
+
+.authorNameForm
+  margin-left: 38%
+  margin-bottom: 0px
+  margin-top: 40px
+
+.authorNameFormField
+  width: 192px
+
+.messageForm
+  padding-top: 20px
+
+.messageField
+  width: 55%
+  margin-right: 10px
+  vertical-align: middle
+
+.messageButton
+  vertical-align: middle
+
+.nii-logo
+  width: 72px
+  float: left
+  margin-left: 82px
+  margin-right: 20px
+
+.button-primary
+  font-size: 2rem
+  display: block
+  width: 194px
+
+.deck
+  margin-top: 85px
+  margin-bottom: 50px
+  font-size: 2.5rem
+  font-weight: 400
+
+.comment
+  font-size: 2rem
+  font-weight: 200
+  font-style: italic
+
+.marker
+  background: #f2fc00
+  padding: 1px 5px 2px
+  -moz-border-radius: 6px
+  -webkit-border-radius: 6px
+
+.nospacing
+  letter-spacing: 0px
+
+.circle
+  position: absolute
+  top: -33px
+  left: 47px
+  margin: auto
+  width: 130px
+  height: 130px
+  border-color: #222
+  border-radius: 50%
+  color: #222
+  border-style: dashed
+  border-width: 2px
+  animation: Spin-right 6s linear infinite, Fadein-fadeout 3s ease infinite
+
+.letter1
+  font-size: 4.6rem
+  position: absolute
+  left: 102px
+  animation: Orbit1 6s linear infinite
+
+.letter2
+  font-size: 4.6rem
+  position: absolute
+  left: 102px
+  animation: Orbit2 6s linear infinite
+
+@keyframes Orbit1
+  from
+    transform: rotate(0deg) translateX(63px) rotate(0deg)
+
+  to
+    transform: rotate(360deg) translateX(63px) rotate(-360deg)
+
+
+@keyframes Orbit2
+  from
+    transform: rotate(-180deg) translateX(63px) rotate(180deg)
+
+  to
+    transform: rotate(180deg) translateX(63px) rotate(-180deg)
+
+
+@keyframes Spin-right
+  100%
+    transform: rotate(360deg)
+
+
+@keyframes Fadein-fadeout
+  0%
+    opacity: 0.1
+
+  50%
+    opacity: 0.5
+
+  100%
+    opacity: 0.1

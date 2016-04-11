@@ -1,0 +1,8 @@
+.idea
+db.sqlite3
+.vagrant
+manage.py
+package.json
+node_modules
+npm-debug.log
+staticfiles
