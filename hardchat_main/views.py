@@ -46,9 +46,10 @@ def room_state(request, label):
         raise Http404
     if room:
         messages = reversed(room.messages.order_by('-timestamp')[:50])
-        messages_props = [{'author': message.author, 'text': message.text, 'datetime': message.timestamp} for message in messages]
+        messages_props = [message.as_dict() for message in messages]
         data = {'room': {'label': room.name},
-                'messages': list(messages_props)}
+                'messages': list(messages_props),
+                'banned': [word.word for word in room.banned_words.all()]}
         return JsonResponse(data)
     else:
         raise Http404

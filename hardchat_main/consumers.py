@@ -53,19 +53,20 @@ def ws_receive(message):
         log.debug("ws message isn't json text=%s", message['text'])
         return
 
-    if set(data.keys()) != set(('author', 'text', 'datetime')):
+    if set(data.keys()) != {'author', 'text'}:
         log.debug("ws message unexpected format data=%s", data)
         return
 
     if data:
-        log.debug('chat message room=%s handle=%s message=%s',
-                  room.label, data['author'], data['text'])
         m = room.messages.create(author=data['author'],
                                  text=data['text'],
                                  timestamp=timezone.now() + timedelta(hours=3))
                                  # FIXME: add proper timezone activation
         Group('chat-'+label, channel_layer=message.channel_layer).send({'text': json.dumps(m.as_dict())})
-
+        room.add_words(data['text'])
+        if not room.messages.count() % 5:
+            banned = room.ban_words()
+            Group('chat-' + label, channel_layer=message.channel_layer).send({'text': json.dumps(banned)})
 
 @channel_session
 def ws_disconnect(message):

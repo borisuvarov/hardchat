@@ -1,4 +1,4 @@
-function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
+function chat (React, ReactDOM, Scrollbars, getCookie, ReconnectingWebSocket) {
 
     require('../../styles/_sass/main.sass');
     require('../../styles/vendor/normalize.css');
@@ -21,7 +21,7 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
                 <div className="message">
                     <span
                         className="messageDatetime">{this.props.datetime}</span>
-                    <h5 className="messageAuthor">
+                    <h5 className={this.props.author != this.props.currentAuthor ? 'messageAuthor' : 'messageAuthor currentAuthor'}>
                         {this.props.author}
                     </h5>
                     <span className="messageText">{this.props.text}</span>
@@ -32,18 +32,22 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
     });
 
     var MessageList = React.createClass({
+        componentDidUpdate: function(prevProps, prevState){
+            this.refs.scrollbars.scrollToBottom();
+        },
         render: function () {
+            var currentAuthor = this.props.currentAuthor;
             var messageNodes = this.props.data.map(function (message, i) {
                 return (
-                    <Message author={message.author} key={i}
+                    <Message currentAuthor={currentAuthor} author={message.author} key={i}
                              text={message.text} datetime={message.datetime}>
                     </Message>
                 );
             });
             return (
-                <div className="messageList">
+                <Scrollbars className="scrollContainer" style={{ height: 400 }} ref="scrollbars">
                     {messageNodes}
-                </div>
+                </Scrollbars>
             );
         }
     });
@@ -61,11 +65,19 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
             if (!text) {
                 return;
             }
+            var wordsRe = /[\wа-яё]+/gi;
+            var bannedWords = this.props.banned;
+            text = text.replace(wordsRe, function(word) {
+                if (bannedWords.indexOf(word.toLowerCase()) > -1) {
+                    return Array(word.length + 1).join("*");
+                } else {
+                    return word;
+                }
+            });
             this.setState({text: ''});
             this.props.onMessageSubmit({
                 author: this.props.author,
                 text: text,
-                datetime: new Date().toTimeString().split(' ')[0]
             });
         },
         render: function () {
@@ -118,11 +130,29 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
         }
     });
 
+    var BannedWords = React.createClass({
+        render: function () {
+            var wordsNodes = this.props.data.map(function (word) {
+                return (
+                    <p className="bannedWord">{word}</p>
+                );
+            });
+            return (
+                <div className="bannedWordsList">
+                    <p className="bannedWordsStats">Забанено слов: {this.props.data.length}</p>
+                    {wordsNodes}
+                </div>
+            );
+        }
+    });
+
+
     var ChatPage = React.createClass({
         getInitialState: function () {
             return {
                 room: {},
                 messages: [],
+                banned: [],
                 author: getCookie('author')
             };
         },
@@ -131,7 +161,8 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
                 function (result) {
                     this.setState({
                         room: {'label': result.room.label},
-                        messages: [result.messages],
+                        messages: result.messages,
+                        banned: result.banned
                     });
                 }.bind(this));
             var that = this;
@@ -144,26 +175,21 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
             this.serverRequest.abort();
         },
         handleReceivedMessage: function (sockdata) {
-            if (this.state.author !== sockdata.author) {
+            if (sockdata.banned) {
+                this.setState({banned: sockdata.banned});
+            } else {
                 var msgsTmp = this.state.messages;
                 msgsTmp.push({
                     author: sockdata.author,
                     text: sockdata.text,
                     datetime: sockdata.datetime
                 });
-                console.log(msgsTmp);
                 this.setState({messages: msgsTmp});
+
             }
         },
         handleMessageSubmit: function (message) {
-            var msgsTmp = this.state.messages;
-            msgsTmp.push({
-                author: message.author,
-                text: message.text,
-                datetime: message.datetime
-            });
             chatsock.send(JSON.stringify(message));
-            this.setState({messages: msgsTmp});
         },
         handleAuthorSubmit: function (author) {
             var expiresDate = new Date(new Date().getTime() + 60 * 60 * 24 * 365 * 1000);
@@ -174,8 +200,11 @@ function chat (React, ReactDOM, getCookie, ReconnectingWebSocket) {
             return (
                 <div className="content">
                     <RoomName data={this.state.room}/>
-                    <MessageList data={this.state.messages}/>
-                    <MessageForm author={this.state.author}
+                    <BannedWords data={this.state.banned}/>
+                    <MessageList data={this.state.messages}
+                                 currentAuthor={this.state.author}/>
+                    <MessageForm banned={this.state.banned}
+                                 author={this.state.author}
                                  onMessageSubmit={this.handleMessageSubmit}/>
                     <AuthorForm author={this.state.author}
                                 onAuthorSubmit={this.handleAuthorSubmit}/>
