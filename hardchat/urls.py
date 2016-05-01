@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.contrib import admin
-from hardchat_main.views import *
+
+from hardchat_main.views import about, new_room, chat_room, room_state
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

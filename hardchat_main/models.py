@@ -9,12 +9,25 @@ from django.utils import timezone
 class Room(models.Model):
     name = models.TextField()
     label = models.SlugField(unique=True)
+    PREPOSITIONS = [
+        'и', 'в', 'не', 'на', 'что', 'с', 'а', 'как', 'это',
+        'по', 'к', 'но', 'у', 'из', 'за', 'от', 'о', 'так',
+        'для', 'же', 'все', 'или', 'бы', 'если', 'до', 'то',
+        'да', 'при', 'нет', 'чтобы', 'даже', 'ни', 'раз',
+        'ну', 'со', 'под', 'много', 'ли', 'чем', 'надо', 'без',
+        'через', 'об', 'ведь', 'хотя', 'перед', 'между',
+        'лишь', 'уж', 'над', 'однако', 'право', 'вообще',
+        'про', 'оно', 'кроме', 'будто', 'среди', 'хоть',
+        'наконец', 'против', 'наверное', 'ко', 'пусть',
+        'словно', 'поскольку', 'впрочем', 'либо', 'главное',
+        'вроде', 'пол', 'ж', 'было', 'разве', 'чтоб', 'вместо',
+        'никак', 'зато', 'ибо', 'лучше', 'б'
+    ]
 
     def add_words(self, text):
-        PREPOSITIONS = ['и', 'в', 'не', 'на', 'что', 'с', 'а', 'как', 'это', 'по', 'к', 'но', 'у', 'из', 'за', 'от', 'о', 'так', 'для', 'же', 'все', 'или', 'бы', 'если', 'до', 'то', 'да', 'при', 'нет', 'чтобы', 'даже', 'ни', 'раз', 'ну', 'со', 'под', 'много', 'ли', 'чем', 'надо', 'без', 'через', 'об', 'ведь', 'хотя', 'перед', 'между', 'лишь', 'уж', 'над', 'однако', 'право', 'вообще', 'про', 'оно', 'кроме', 'будто', 'среди', 'хоть', 'наконец', 'против', 'наверное', 'ко', 'пусть', 'словно', 'поскольку', 'впрочем', 'либо', 'главное', 'вроде', 'пол', 'ж', 'было', 'разве', 'чтоб', 'вместо', 'никак', 'зато', 'ибо', 'лучше', 'б']
         pattern = re.compile("(\w[\w']*\w|\w)")
         for word in pattern.findall(text):
-            if word.lower() not in PREPOSITIONS:
+            if word.lower() not in self.PREPOSITIONS:
                 obj, created = ValidWord.objects.get_or_create(
                     word=word.lower(), room=self)
                 if created:
@@ -29,6 +42,10 @@ class Room(models.Model):
         return {'banned': [word.word for word in BannedWord.objects.filter(
                                                                 room=self)],
                 'new_banned': most_common}
+
+    def banned_words_count(self):
+        return self.banned_words.count()
+    banned_words_count.short_description = "Banned words"
 
     def __unicode__(self):
         return self.label
@@ -60,4 +77,5 @@ class Message(models.Model):
     def as_dict(self):
         return {'author': self.author,
                 'text': self.text,
-                'datetime': self.formatted_timestamp}
+                'datetime': self.formatted_timestamp,
+                'messageId': self.pk}

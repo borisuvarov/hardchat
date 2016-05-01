@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 @channel_session
 def ws_connect(message):
     try:
-        prefix, label = message['path'].decode('ascii').strip('/').split('/')
+        prefix, label = message['path'].strip('/').split('/')
         if prefix != 'chat':
             log.debug('invalid ws path=%s', message['path'])
             return

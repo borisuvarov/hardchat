@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}Хардчат{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href='//fonts.googleapis.com/css?family=Roboto:400,300,600,200' rel='stylesheet' type='text/css'>
-  {% load staticfiles %}
-  <script type="text/javascript" src='{% static "js/vendor/jquery-2.2.3.min.js" %}'></script>
-  <script type="text/javascript" src='{% static "build/main.min.js" %}'></script>
-  <link rel="stylesheet" href="{% static 'build/room.min.css' %}">
+    <meta charset="utf-8">
+    <title>{% block title %}Хардчат{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='//fonts.googleapis.com/css?family=Roboto:400,300,600,200' rel='stylesheet' type='text/css'>
+    {% load staticfiles %}
+    <script type="text/javascript" src='{% static "js/vendor/jquery-2.2.3.min.js" %}'></script>
+    <script type="text/javascript" src='{% static "build/main.min.js" %}'></script>
+    <link rel="stylesheet" href="{% static 'build/room.min.css' %}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static "img/favicons/apple-icon-57x57.png" %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static "img/favicons/apple-icon-60x60.png" %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static "img/favicons/apple-icon-72x72.png" %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static "img/favicons/apple-icon-76x76.png" %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static "img/favicons/apple-icon-114x114.png" %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static "img/favicons/apple-icon-120x120.png" %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static "img/favicons/apple-icon-144x144.png" %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static "img/favicons/apple-icon-152x152.png" %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "img/favicons/apple-icon-180x180.png" %}">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{% static "img/favicons/android-icon-192x192.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "img/favicons//favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static "img/favicons//favicon-96x96.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "img/favicons//favicon-16x16.png" %}">
+    <link rel="manifest" href="{% static "img/favicons/manifest.json" %}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{% static "img/favicons/ms-icon-144x144.png" %}">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta property="og:site_name" content="hardchat.ru" />
+    <meta property="og:title" content="Чат, в котором каждую минуту банятся самые часто используемые слова — за исключением предлогов, союзов и прочих служебных частей речи." />
+    <meta property="og:url" content="https://hardchat.ru/" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:description" content="Проект создан в рамках эксперимента лаборатории онлайн-чатов НИИ эволюции коммуникаций им. М. Н. Усиляева." />
+    <meta property="og:image" content="{% static "img/hardchat_shot.png" %}" />
+
+    <meta name="twitter:image" content="https://air-msc.ru/static/img/hardchat_shot.png?83safi32fala" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Чат, в котором каждую минуту банятся самые часто используемые слова" />
+    <meta name="twitter:description" content="Проект создан в рамках эксперимента лаборатории онлайн-чатов НИИ эволюции коммуникаций им. М. Н. Усиляева." />
+
 </head>
 <body>
-  <div class="section">
-    <div class="container">
-      {% block content %}{% endblock content %}
+    <div class="section">
+        <div class="container">
+            {% block content %}{% endblock content %}
+        </div>
     </div>
-  </div>  
-  {% block afterbody %}{% endblock afterbody %}
+    {% block afterbody %}{% endblock afterbody %}
 </body>
 </html>

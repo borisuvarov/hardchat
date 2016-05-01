@@ -1,7 +1,7 @@
 body
   padding-top: 4em
 
-.main-logo
+.logoMain
   font-weight: 400
   letter-spacing: 30px
 
@@ -15,7 +15,7 @@ body
   font-size: 12px
 
 .messageAuthor
-  margin-bottom: 0px
+  margin-bottom: 0
   display: inline-block
   left: 10px
   position: relative
@@ -31,7 +31,7 @@ body
 
 .authorNameForm
   margin-left: 38%
-  margin-bottom: 0px
+  margin-bottom: 0
   margin-top: 40px
 
 .authorNameFormField
@@ -55,7 +55,7 @@ body
 
 .bannedWordsStats
   margin-left: 5px
-  margin-bottom: 0px
+  margin-bottom: 0
   font-weight: bold
 
 .bannedWord
@@ -64,49 +64,47 @@ body
   color: #5F5B5B
   margin-bottom: 0
 
-.nii-logo
+.niiLogo
   width: 72px
   float: left
   margin-left: 82px
   margin-right: 20px
 
-.button-primary
+.buttonPrimary
   font-size: 2rem
   display: block
   width: 194px
 
-.deck
+.mainCaption
   margin-top: 85px
   margin-bottom: 50px
   font-size: 2.5rem
   font-weight: 400
 
-.comment
+.commentWithNiiLogo
   font-size: 2rem
   font-weight: 200
   font-style: italic
 
-.marker
+.markerYellow
   background: #f2fc00
   padding: 1px 5px 2px
   -moz-border-radius: 6px
   -webkit-border-radius: 6px
 
-.nospacing
-  letter-spacing: 0px
+.noSpacing
+  letter-spacing: 0
 
-.circle
+.circleDashed
   position: absolute
   top: -33px
   left: 47px
   margin: auto
   width: 130px
   height: 130px
-  border-color: #222
   border-radius: 50%
   color: #222
-  border-style: dashed
-  border-width: 2px
+  border: 2px dashed #222
   animation: Spin-right 6s linear infinite, Fadein-fadeout 3s ease infinite
 
 .letter1
@@ -116,10 +114,8 @@ body
   animation: Orbit1 6s linear infinite
 
 .letter2
-  font-size: 4.6rem
-  position: absolute
-  left: 102px
-  animation: Orbit2 6s linear infinite
+    @extend .letter1
+    animation: Orbit2 6s linear infinite
 
 @keyframes Orbit1
   from
@@ -128,7 +124,6 @@ body
   to
     transform: rotate(360deg) translateX(63px) rotate(-360deg)
 
-
 @keyframes Orbit2
   from
     transform: rotate(-180deg) translateX(63px) rotate(180deg)
@@ -136,11 +131,9 @@ body
   to
     transform: rotate(180deg) translateX(63px) rotate(-180deg)
 
-
 @keyframes Spin-right
   100%
     transform: rotate(360deg)
-
 
 @keyframes Fadein-fadeout
   0%

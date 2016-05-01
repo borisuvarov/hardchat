@@ -6,5 +6,6 @@ node_modules
 npm-debug.log
 staticfiles
 secretkey.txt
+databasepswd.txt
 *.pyc
 *__pycache__*

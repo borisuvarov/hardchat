@@ -1,4 +1,4 @@
-function chat (React, ReactDOM, Scrollbars, getCookie, ReconnectingWebSocket) {
+function chat (React, ReactDOM, Scrollbars, shortid, getCookie, ReconnectingWebSocket) {
 
     require('../../styles/_sass/main.sass');
     require('../../styles/vendor/normalize.css');
@@ -37,9 +37,9 @@ function chat (React, ReactDOM, Scrollbars, getCookie, ReconnectingWebSocket) {
         },
         render: function () {
             var currentAuthor = this.props.currentAuthor;
-            var messageNodes = this.props.data.map(function (message, i) {
+            var messageNodes = this.props.data.map(function (message) {
                 return (
-                    <Message currentAuthor={currentAuthor} author={message.author} key={i}
+                    <Message currentAuthor={currentAuthor} author={message.author} key={message.id}
                              text={message.text} datetime={message.datetime}>
                     </Message>
                 );
@@ -77,7 +77,7 @@ function chat (React, ReactDOM, Scrollbars, getCookie, ReconnectingWebSocket) {
             this.setState({text: ''});
             this.props.onMessageSubmit({
                 author: this.props.author,
-                text: text,
+                text: text
             });
         },
         render: function () {
@@ -182,7 +182,8 @@ function chat (React, ReactDOM, Scrollbars, getCookie, ReconnectingWebSocket) {
                 msgsTmp.push({
                     author: sockdata.author,
                     text: sockdata.text,
-                    datetime: sockdata.datetime
+                    datetime: sockdata.datetime,
+                    messageId: sockdata.id
                 });
                 this.setState({messages: msgsTmp});
 
