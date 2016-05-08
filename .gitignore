@@ -9,3 +9,4 @@ secretkey.txt
 databasepswd.txt
 *.pyc
 *__pycache__*
+*.retry

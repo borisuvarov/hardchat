@@ -1,0 +1,60 @@
+# TODO: Automatically create droplet, secure it, provision (maybe with Docker)
+
+---
+- hosts: hardchat
+  tasks:
+    - name: Add ppa:fkrull/deadsnakes (for newest Python)
+      apt_repository: repo='ppa:fkrull/deadsnakes'
+
+    - name: Update Ubuntu packages cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: Upgrade Ubuntu packages
+      apt: upgrade=full
+
+    - name: Install nginx
+      apt: name=nginx state=latest
+
+    - name: Install build-essential
+      apt: name=build-essential state=latest
+
+    - name: Install libpq-dev
+      apt: name=libpq-dev state=latest
+
+    - name: Install gettext
+      apt: name=gettext state=latest
+
+    - name: Install redis-server
+      apt: name=redis-server state=latest
+
+    - name: Install git
+      apt: name=git state=latest
+
+    - name: Install mercurial
+      apt: name=mercurial state=latest
+
+    - name: Install postgresql
+      apt: name=postgresql state=latest
+
+    - name: Install postgresql-contrib
+      apt: name=postgresql-contrib state=latest
+
+    - name: Install supervisor
+      apt: name=supervisor state=latest
+
+    - name: Install Python 3.5
+      apt: name=python3.5 state=latest
+
+    - name: Install Python 3.5-dev
+      apt: name=python3.5-dev state=latest
+
+    - name: Install setuptools
+      apt: name=python-setuptools state=latest
+
+    - name: Install pip
+      apt: name=python-pip state=latest
+
+
+  handlers:
+    - name: start nginx
+      service: name=nginx state=started

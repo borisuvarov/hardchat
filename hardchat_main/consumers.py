@@ -27,7 +27,8 @@ def ws_connect(message):
     log.debug('chat connect room=%s client=%s:%s',
               room.label, message['client'][0], message['client'][1])
 
-    Group('chat-'+label, channel_layer=message.channel_layer).add(message.reply_channel)
+    Group('chat-'+label, channel_layer=message.channel_layer).add(
+        message.reply_channel)
 
     message.channel_session['room'] = room.label
 
@@ -62,17 +63,22 @@ def ws_receive(message):
                                  text=data['text'],
                                  timestamp=timezone.now() + timedelta(hours=3))
                                  # FIXME: add proper timezone activation
-        Group('chat-'+label, channel_layer=message.channel_layer).send({'text': json.dumps(m.as_dict())})
+        Group('chat-'+label, channel_layer=message.channel_layer).send(
+            {'text': json.dumps(m.as_dict())})
+        # FIXME: remove message.pk usage from client and place async .send
+        # FIXME: method before saving message to database
+
         room.add_words(data['text'])
         if not room.messages.count() % 5:
             banned = room.ban_words()
-            Group('chat-' + label, channel_layer=message.channel_layer).send({'text': json.dumps(banned)})
+            Group('chat-' + label, channel_layer=message.channel_layer).send(
+                {'text': json.dumps(banned)})
 
 @channel_session
 def ws_disconnect(message):
     try:
         label = message.channel_session['room']
-        room = Room.objects.get(label=label)
-        Group('chat-'+label, channel_layer=message.channel_layer).discard(message.reply_channel)
+        Group('chat-'+label, channel_layer=message.channel_layer).discard(
+            message.reply_channel)
     except (KeyError, Room.DoesNotExist):
         pass
