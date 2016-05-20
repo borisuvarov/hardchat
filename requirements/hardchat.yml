@@ -3,6 +3,23 @@
 ---
 - hosts: hardchat
   tasks:
+    - name: Change root password
+      user: name=root password="{{ root_password }}"
+
+    - name: Add deploy user
+      user: name={{ deploy_user_name }} password="{{ deploy_user_password }}" shell=/bin/bash
+
+    - name: Add authorized keys for deploy user
+      authorized_key: user={{ deploy_user_name }}
+                      key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      with_items: deploy_public_keys
+
+    - name: Add deploy user to sudoers
+      lineinfile: dest=/etc/sudoers
+                  regexp="{{ deploy_user_name }} ALL"
+                  line="{{ deploy_user_name }} ALL=(ALL) ALL"
+                  state=present
+
     - name: Add ppa:fkrull/deadsnakes (for newest Python)
       apt_repository: repo='ppa:fkrull/deadsnakes'
 
@@ -11,6 +28,9 @@
 
     - name: Upgrade Ubuntu packages
       apt: upgrade=full
+
+    - name: Install fail2ban
+      apt: name=fail2ban state=latest
 
     - name: Install nginx
       apt: name=nginx state=latest
@@ -39,6 +59,9 @@
     - name: Install postgresql-contrib
       apt: name=postgresql-contrib state=latest
 
+    - name: Change postgres user password
+      user: name=postgres password="{{ postgres_password }}"
+
     - name: Install supervisor
       apt: name=supervisor state=latest
 
@@ -48,13 +71,62 @@
     - name: Install Python 3.5-dev
       apt: name=python3.5-dev state=latest
 
+    - name: Install Python 2 dev
+      apt: name=python-dev state=latest
+
     - name: Install setuptools
-      apt: name=python-setuptools state=latest
+      apt: name=python3-setuptools state=latest
 
     - name: Install pip
       apt: name=python-pip state=latest
 
+    - name: Install psycopg2
+      pip: name=psycopg2 executable=pip
+      become: True
+
+    - name: Create PostgreSQL database
+      become: yes
+      become_user: postgres
+      postgresql_db: name=hardchat
+                     encoding='UTF-8'
+                     lc_collate='en_US.UTF-8'
+                     lc_ctype='en_US.UTF-8'
+                     template='template0'
+
+    - name: Create PostgreSQL user
+      become: yes
+      become_user: postgres
+      postgresql_user: db=hardchat
+                       name={{ deploy_user_name }}
+                       password={{ postgres_password }}
+                       role_attr_flags=SUPERUSER
+
+    - name: Setup ufw
+      ufw: state=enabled policy=deny
+
+    - name: Allow HTTP traffic (port 80)
+      ufw: rule=allow port=80 proto=tcp
+
+    - name: Allow ssh traffic (port 22)
+      ufw: rule=allow port=22 proto=tcp
+
+    - name: Disallow password authentication
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PasswordAuthentication"
+                  line="PasswordAuthentication no"
+                  state=present
+      notify: Restart ssh
+
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PermitRootLogin"
+                  line="PermitRootLogin no"
+                  state=present
+      notify: Restart ssh
 
   handlers:
     - name: start nginx
       service: name=nginx state=started
+
+    - name: Restart ssh
+      service: name=ssh state=restarted
