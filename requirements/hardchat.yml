@@ -6,8 +6,17 @@
     - name: Change root password
       user: name=root password="{{ root_password }}"
 
+    - name: Create the project directory
+      file: state=directory path={{ project_root }}
+
     - name: Add deploy user
       user: name={{ deploy_user_name }} password="{{ deploy_user_password }}" shell=/bin/bash
+
+    - name: Update the project directory
+      file: owner={{ deploy_user_name }} mode=755 state=directory path={{ project_root }}
+
+    - name: Create the code directory
+      file: owner={{ deploy_user_name }} mode=755 state=directory path={{ project_root }}/code/
 
     - name: Add authorized keys for deploy user
       authorized_key: user={{ deploy_user_name }}
@@ -77,10 +86,10 @@
     - name: Install setuptools
       apt: name=python3-setuptools state=latest
 
-    - name: Install pip
+    - name: Install pip (for Python 2)
       apt: name=python-pip state=latest
 
-    - name: Install psycopg2
+    - name: Install psycopg2 (for Python 2)
       pip: name=psycopg2 executable=pip
       become: True
 
@@ -107,6 +116,9 @@
     - name: Allow HTTP traffic (port 80)
       ufw: rule=allow port=80 proto=tcp
 
+    - name: Allow HTTPS traffic (port 443)
+      ufw: rule=allow port=443 proto=tcp
+
     - name: Allow ssh traffic (port 22)
       ufw: rule=allow port=22 proto=tcp
 
@@ -124,9 +136,19 @@
                   state=present
       notify: Restart ssh
 
+    - name: Pull code from the repository
+      git: repo={{ project_repo }} dest={{ project_root }}/code/ version=master accept_hostkey=True
+
+    - name: Install nginx configuration file
+      template: src=nginx_conf.j2 dest=/etc/nginx/sites-enabled/{{ project_name }}
+      notify: restart nginx
+
   handlers:
     - name: start nginx
       service: name=nginx state=started
+
+    - name: restart nginx
+      service: name=nginx state=restarted
 
     - name: Restart ssh
       service: name=ssh state=restarted
