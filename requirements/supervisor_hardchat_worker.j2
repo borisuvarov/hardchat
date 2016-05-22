@@ -1,0 +1,6 @@
+[program:hardchat_worker]
+command=sh {{project_root}}/code/requirements/start_worker.sh
+directory={{project_root}}/code/requirements/
+user=hcdeploy
+autostart=true
+autorestart=true

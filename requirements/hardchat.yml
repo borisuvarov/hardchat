@@ -127,14 +127,14 @@
                   regexp="^PasswordAuthentication"
                   line="PasswordAuthentication no"
                   state=present
-      notify: Restart ssh
+      notify: restart ssh
 
     - name: Disallow root SSH access
       lineinfile: dest=/etc/ssh/sshd_config
                   regexp="^PermitRootLogin"
                   line="PermitRootLogin no"
                   state=present
-      notify: Restart ssh
+      notify: restart ssh
 
     - name: Pull code from the repository
       git: repo={{ project_repo }} dest={{ project_root }}/code/ version=master accept_hostkey=True
@@ -143,6 +143,14 @@
       template: src=nginx_conf.j2 dest=/etc/nginx/sites-enabled/{{ project_name }}
       notify: restart nginx
 
+    - name: Install supervisor configuration file for daphne
+      template: src=supervisor_hardchat_daphne.j2 dest=/etc/supervisor/conf.d/hardchat_daphne.conf
+      notify: start daphne
+
+    - name: Install supervisor configuration file for worker
+      template: src=supervisor_hardchat_worker.j2 dest=/etc/supervisor/conf.d/hardchat_worker.conf
+      notify: start worker
+
   handlers:
     - name: start nginx
       service: name=nginx state=started
@@ -150,5 +158,11 @@
     - name: restart nginx
       service: name=nginx state=restarted
 
-    - name: Restart ssh
+    - name: restart ssh
       service: name=ssh state=restarted
+
+    - name: start daphne
+      supervisorctl: name=hardchat_daphne state=started
+
+    - name: start worker
+      supervisorctl: name=hardchat_worker state=started
