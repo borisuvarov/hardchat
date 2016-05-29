@@ -21,13 +21,14 @@ class Room(models.Model):
         'наконец', 'против', 'наверное', 'ко', 'пусть',
         'словно', 'поскольку', 'впрочем', 'либо', 'главное',
         'вроде', 'пол', 'ж', 'было', 'разве', 'чтоб', 'вместо',
-        'никак', 'зато', 'ибо', 'лучше', 'б'
+        'никак', 'зато', 'ибо', 'лучше', 'б', 'их', 'уже', 'эту', 'нее',
+        'него', 'еще',
     ]
 
     def add_words(self, text):
         pattern = re.compile("(\w[\w']*\w|\w)")
         for word in pattern.findall(text):
-            if word.lower() not in self.PREPOSITIONS:
+            if word.lower().replace('ё', 'е') not in self.PREPOSITIONS:
                 obj, created = ValidWord.objects.get_or_create(
                     word=word.lower(), room=self)
                 if created:
@@ -47,8 +48,8 @@ class Room(models.Model):
         return self.banned_words.count()
     banned_words_count.short_description = "Banned words"
 
-    def __unicode__(self):
-        return self.label
+    def __str__(self):
+        return self.name
 
 
 class ValidWord(models.Model):
@@ -67,7 +68,7 @@ class Message(models.Model):
     text = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '[{timestamp}] {author}: {text}'.format(**self.as_dict())
 
     @property
