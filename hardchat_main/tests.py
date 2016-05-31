@@ -26,3 +26,12 @@ class RoomTestCase(TestCase):
         room = Room.objects.get(label=self.label)
         room.add_words(self.text)
         self.assertEqual(ValidWord.objects.count(), 46)
+
+    def test_ban_words(self):
+        """Ban 5 most common valid words
+        """
+        room = Room.objects.get(label=self.label)
+        room.add_words(self.text)
+        room.ban_words()
+        self.assertEqual(BannedWord.objects.count(), 5)
+        self.assertEqual(ValidWord.objects.count(), 41)

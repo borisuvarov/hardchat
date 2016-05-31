@@ -56,10 +56,16 @@ class ValidWord(models.Model):
     word = models.CharField(max_length=300)
     room = models.ForeignKey(Room, related_name='valid_words', null=True)
 
+    def __str__(self):
+        return self.word
+
 
 class BannedWord(models.Model):
     word = models.CharField(max_length=300)
     room = models.ForeignKey(Room, related_name='banned_words', null=True)
+
+    def __str__(self):
+        return self.word
 
 
 class Message(models.Model):
