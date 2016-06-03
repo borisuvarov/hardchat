@@ -10,3 +10,4 @@ databasepswd.txt
 *.pyc
 *__pycache__*
 *.retry
+.coverage
